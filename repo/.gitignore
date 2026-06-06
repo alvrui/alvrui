@@ -1,0 +1,21 @@
+# Rust build artifacts
+target/
+*.rlib
+*.so
+*.a
+*.dll
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db

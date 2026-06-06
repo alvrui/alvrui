@@ -1,0 +1,139 @@
+---
+config_plantillas_evento:
+  - id: "trafalgar_1805"
+    familia: "sesion_institucional"
+    tipo: "historico_fijo"
+    fecha: "1805-10-21"
+    texto_base: |
+      "La flota franco-española ha sido derrotada por los británicos en Trafalgar.
+      Cádiz se convierte en el último bastión de la resistencia. Los barcos heridos llegan al puerto."
+    precondiciones: []
+    ponderacion: 100
+    opciones: []
+  - id: "carta_proveedor_indias"
+    familia: "lectura_expediente"
+    tipo: "dinamico_protagonista"
+    fecha_inicio: "1805-10-22"
+    fecha_fin: "1805-10-31"
+    texto_base: |
+      "Un mensajero te entrega una carta de tu proveedor en Perú.
+      Te recuerda que le debes 500 reales por un envío de mercancías."
+    precondiciones:
+      - tipo: "protagonista"
+        objetivo: "oficio"
+        operador: "=="
+        valor: "comerciante"
+    ponderacion: 80
+    opciones:
+      - id: "pagar_deuda"
+        texto: "Pagar los 500 reales."
+        efectos:
+          - tipo: "medidor"
+            objetivo: "recursos"
+            delta: -10
+          - tipo: "compromiso"
+            objetivo: "deuda_proveedor_indias"
+            accion: "cumplir"
+      - id: "ignorar_carta"
+        texto: "Ignorar la carta por ahora."
+        efectos:
+          - tipo: "medidor"
+            objetivo: "reputacion"
+            delta: -5
+          - tipo: "compromiso"
+            objetivo: "deuda_proveedor_indias"
+            accion: "incumplir"
+  - id: "encuentro_mercader_rival"
+    familia: "encuentro_urbano"
+    tipo: "dinamico_protagonista"
+    fecha_inicio: "1805-10-24"
+    fecha_fin: "1805-10-31"
+    texto_base: |
+      "Un mercader rival, José Martínez, te acusa de contrabando en la Aduana.
+      Amenaza con denunciarte si no resuelves el conflicto."
+    precondiciones:
+      - tipo: "protagonista"
+        objetivo: "oficio"
+        operador: "=="
+        valor: "comerciante"
+      - tipo: "reputacion"
+        objetivo: "fac_consulado"
+        operador: "<="
+        valor: 50
+    ponderacion: 60
+    opciones:
+      - id: "sobornar"
+        texto: "Sobornar a José Martínez con 50 reales."
+        efectos:
+          - tipo: "medidor"
+            objetivo: "recursos"
+            delta: -5
+          - tipo: "reputacion"
+            objetivo: "fac_consulado"
+            delta: -10
+      - id: "negociar"
+        texto: "Negociar una solución pacífica."
+        efectos:
+          - tipo: "medidor"
+            objetivo: "relacional"
+            delta: +5
+          - tipo: "medidor"
+            objetivo: "recursos"
+            delta: -2
+  - id: "rumor_bloqueo_frances"
+    familia: "encuentro_urbano"
+    tipo: "dinamico_consecuencia"
+    fecha_inicio: "1805-10-26"
+    fecha_fin: "1805-10-31"
+    texto_base: |
+      "En el Café de Apolo, escuchas rumores de que los franceses planean un bloqueo naval.
+      Esto podría afectar a tus negocios."
+    precondiciones: []
+    ponderacion: 50
+    opciones:
+      - id: "investigar"
+        texto: "Investigar el rumor con tus contactos."
+        efectos:
+          - tipo: "medidor"
+            objetivo: "relacional"
+            delta: +5
+          - tipo: "mundo"
+            objetivo: "tema_caliente_id"
+            valor: "asedio_frances"
+      - id: "ignorar"
+        texto: "No le des importancia."
+        efectos: []
+  - id: "tertulia_comerciantes"
+    familia: "visita_privada"
+    tipo: "dinamico_protagonista"
+    fecha_inicio: "1805-10-28"
+    fecha_fin: "1805-10-31"
+    texto_base: |
+      "Un grupo de comerciantes te invita a una tertulia en el Café de Apolo.
+      Hablarán sobre cómo afrontar la crisis tras Trafalgar."
+    precondiciones:
+      - tipo: "protagonista"
+        objetivo: "clase"
+        operador: "=="
+        valor: "burguesia"
+      - tipo: "reputacion"
+        objetivo: "fac_consulado"
+        operador: ">="
+        valor: 50
+    ponderacion: 70
+    opciones:
+      - id: "asistir"
+        texto: "Asistir a la tertulia."
+        efectos:
+          - tipo: "medidor"
+            objetivo: "relacional"
+            delta: +10
+          - tipo: "reputacion"
+            objetivo: "fac_consulado"
+            delta: +5
+      - id: "rechazar"
+        texto: "Rechazar la invitación."
+        efectos:
+          - tipo: "reputacion"
+            objetivo: "fac_consulado"
+            delta: -5

@@ -1,0 +1,26 @@
+{
+  "project": "cadi-alfa",
+  "module": "meter_delta_applier",
+  "description": "Corrige meter_delta_applier para sumar tendencia acumulada, usar delta efectivo tras clamp y mantener tests compilables con PlayerMeters.",
+  "functions": [
+    {
+      "name": "apply_deltas",
+      "signature": "fn apply_deltas(player: &mut PlayerState, deltas: &[MeterDelta])",
+      "description": "Aplica deltas sobre medidores y reputaciones con clamp 0..100 y suma de tendencia acumulada. Para nuevos targets, crea entradas con tendencia igual al delta efectivo. Ignora targets no reconocidos.",
+      "examples": [
+        "apply_deltas(&mut player, &deltas);"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_apply_delta_to_core_meter_value() { let mut player = PlayerState::new(); let deltas = vec![MeterDelta { target: \"med_influencia_valor\".to_string(), delta: 12 }]; apply_deltas(&mut player, &deltas); assert_eq!(player.meters.influencia_valor, 12); assert_eq!(player.meters.influencia_tendencia, 12); }",
+    "#[test] fn test_apply_delta_accumulates_core_meter_tendency() { let mut player = PlayerState::new(); player.meters.influencia_tendencia = 3; let deltas = vec![MeterDelta { target: \"med_influencia_valor\".to_string(), delta: 4 }]; apply_deltas(&mut player, &deltas); assert_eq!(player.meters.influencia_tendencia, 7); }",
+    "#[test] fn test_apply_delta_clamps_core_meter_at_hundred_and_uses_effective_delta() { let mut player = PlayerState::new(); player.meters.aguante_valor = 95; player.meters.aguante_tendencia = 1; let deltas = vec![MeterDelta { target: \"med_aguante_valor\".to_string(), delta: 10 }]; apply_deltas(&mut player, &deltas); assert_eq!(player.meters.aguante_valor, 100); assert_eq!(player.meters.aguante_tendencia, 6); }",
+    "#[test] fn test_apply_delta_to_group_reputation() { let mut player = PlayerState::new(); player.reputaciones.push(GroupReputation { grupo_id: \"prensa\".to_string(), valor: 40, tendencia: 0 }); let deltas = vec![MeterDelta { target: \"rep_prensa_valor\".to_string(), delta: 15 }]; apply_deltas(&mut player, &deltas); assert_eq!(player.reputaciones[0].valor, 55); assert_eq!(player.reputaciones[0].tendencia, 15); }",
+    "#[test] fn test_apply_delta_creates_group_reputation_with_effective_delta() { let mut player = PlayerState::new(); let deltas = vec![MeterDelta { target: \"rep_prensa_valor\".to_string(), delta: -10 }]; apply_deltas(&mut player, &deltas); assert_eq!(player.reputaciones[0].valor, 0); assert_eq!(player.reputaciones[0].tendencia, 0); }"
+  ],
+  "dependencies": [
+    "serde"
+  ],
+  "notes": "Importar solo PlayerState y GroupReputation desde crate::player_state. MeterDelta debe tener campos target: String y delta: i32. Para medidores y reputaciones: 1) clamp 0..100 al valor resultante, 2) calcular effective_delta = new_value - old_value, 3) sumar effective_delta a la tendencia existente (o inicializarla con effective_delta si es nuevo). Ignorar targets no reconocidos. No modificar relaciones, compromisos ni umbrales."
+}

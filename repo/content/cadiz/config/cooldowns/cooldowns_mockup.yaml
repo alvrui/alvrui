@@ -1,0 +1,14 @@
+---
+config_cooldowns:
+  - id: "decision_politica"
+    tipo: "medidor"
+    duracion_base: 3
+    aplicable_a: ["influencia", "reputacion", "coherencia"]
+  - id: "traicion_faccion"
+    tipo: "faccion"
+    duracion_base: 5
+    aplicable_a: ["fac_liberales_progresistas", "fac_consulado", "fac_serviles"]
+  - id: "evento_recurrente"
+    tipo: "evento"
+    duracion_base: 1
+    aplicable_a: ["carta_proveedor_indias", "rumor_bloqueo_frances"]

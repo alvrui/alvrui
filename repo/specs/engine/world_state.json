@@ -1,0 +1,23 @@
+{
+  "project": "cadi-alfa",
+  "module": "world_state",
+  "description": "Define el estado global del mundo del motor, incluyendo eje temporal, clima político, facciones, espacios y crisis activa, siguiendo la arquitectura de Nivel 1.",
+  "functions": [
+    {
+      "name": "new",
+      "signature": "fn new() -> WorldState",
+      "description": "Construye un WorldState con subestados vacíos y valores iniciales seguros.",
+      "examples": [
+        "WorldState::new()"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_new_world_state_starts_with_zero_jornada() { let state = WorldState::new(); assert_eq!(state.time.jornada_absoluta, 0); }",
+    "#[test] fn test_new_world_state_starts_without_active_crisis() { let state = WorldState::new(); assert!(state.active_crisis.is_none()); }"
+  ],
+  "dependencies": [
+    "serde"
+  ],
+  "notes": "Usar derive Debug, Clone, Serialize, Deserialize, Default. Definir WorldState como agregación de TimeState, PoliticalClimate, Vec<FactionState>, Vec<SpaceState> y Option<ActiveCrisis>. TimeState debe incluir tiempo_tramo como String, acto_narrativo como u32, jornada_absoluta como u32, distancia_pivote_proximo como i32 y distancia_pivote_anterior como i32. PoliticalClimate debe incluir estado_global como enum con valores normalidad_tensa, precrisis, crisis_abierta, resaca_crisis, celebracion_publica y represion_latente; polarizacion como u8; visibilidad_tablero como u8; tema_caliente_id como String. FactionState debe incluir fac_id, fac_fuerza, fac_necesidad_del_jugador, fac_cohesion_interna, fac_prioridad_politica_id, fac_tolerancia_disidencia, fac_linea_roja_activa, fac_vigilancia_sobre_jugador y fac_capacidades_presion. SpaceState debe incluir esp_id, esp_disponible, esp_nivel_riesgo, esp_clima, esp_npcs_presentes, esp_coste_temporal y esp_tipo_interaccion_primaria. ActiveCrisis debe incluir crisis_tipo_id, crisis_fase, crisis_jornadas_activas, crisis_tablero_permeable y crisis_ventana_activa. Mantener nombres idiomáticos de tipos en Rust y campos públicos. No incluir referencias a Cádiz ni lógica narrativa."
+}

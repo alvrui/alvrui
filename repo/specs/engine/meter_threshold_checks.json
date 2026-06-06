@@ -1,0 +1,24 @@
+{
+  "project": "cadi-alfa",
+  "module": "meter_threshold_checks",
+  "description": "Detecta cruces de umbral en los seis medidores centrales del protagonista y devuelve identificadores estables de umbrales activados para uso posterior por el generador de eventos.",
+  "functions": [
+    {
+      "name": "collect_triggered_meter_thresholds",
+      "signature": "fn collect_triggered_meter_thresholds(player: &PlayerState) -> Vec<String>",
+      "description": "Recorre los seis medidores centrales y devuelve IDs deterministas de umbral bajo o alto actualmente activados.",
+      "examples": [
+        "let triggered = collect_triggered_meter_thresholds(&player);",
+        "assert!(triggered.contains(&\"influencia_bajo\".to_string()));"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_collect_triggered_meter_thresholds_returns_empty_when_no_meter_crosses_thresholds() { let mut player = PlayerState::new(); player.meters.influencia_valor = 10; player.meters.influencia_umbral_bajo = 5; player.meters.influencia_umbral_alto = 90; let triggered = collect_triggered_meter_thresholds(&player); assert!(triggered.is_empty()); }",
+    "#[test] fn test_collect_triggered_meter_thresholds_detects_low_threshold() { let mut player = PlayerState::new(); player.meters.influencia_valor = 5; player.meters.influencia_umbral_bajo = 5; let triggered = collect_triggered_meter_thresholds(&player); assert!(triggered.contains(&\"influencia_bajo\".to_string())); }",
+    "#[test] fn test_collect_triggered_meter_thresholds_detects_high_threshold() { let mut player = PlayerState::new(); player.meters.aguante_valor = 80; player.meters.aguante_umbral_alto = 80; let triggered = collect_triggered_meter_thresholds(&player); assert!(triggered.contains(&\"aguante_alto\".to_string())); }",
+    "#[test] fn test_collect_triggered_meter_thresholds_detects_multiple_thresholds() { let mut player = PlayerState::new(); player.meters.recursos_valor = 2; player.meters.recursos_umbral_bajo = 3; player.meters.coherencia_valor = 95; player.meters.coherencia_umbral_alto = 90; let triggered = collect_triggered_meter_thresholds(&player); assert!(triggered.contains(&\"recursos_bajo\".to_string())); assert!(triggered.contains(&\"coherencia_alto\".to_string())); }"
+  ],
+  "dependencies": [],
+  "notes": "Ubicar en rust/crates/game_core/src/meter_threshold_checks.rs. Importar crate::player_state::PlayerState. No debe consultar configuracion externa ni generar eventos; solo detectar y devolver identificadores simples y deterministas. Debe trabajar con la estructura plana actual de PlayerMeters. Usar nombres de salida exactos: influencia_bajo, influencia_alto, relacional_bajo, relacional_alto, reputacion_bajo, reputacion_alto, coherencia_bajo, coherencia_alto, recursos_bajo, recursos_alto, aguante_bajo y aguante_alto. Mantener implementacion pura y sin efectos secundarios."
+}

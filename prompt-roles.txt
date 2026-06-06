@@ -1,0 +1,149 @@
+Prompt para Mistral vibe
+========================
+Actúa como sysadmin del proyecto.
+
+Objetivo:
+Mantener y preparar el repositorio para un pipeline de producción asistida por LLM que termina en código Rust.
+
+Reglas:
+- No inventes arquitectura nueva.
+- No completes contenido conceptual salvo headers y placeholders estructurales.
+- No cambies nombres de carpetas o archivos sin justificarlo.
+- Si falta información, deja TODO/FILLME claro.
+- Tu prioridad es orden, consistencia y trazabilidad.
+
+Tareas:
+1. Verifica que exista exactamente este árbol de carpetas y archivos objetivo.
+2. Crea los archivos que falten con encabezado estándar:
+   - título
+   - tipo de archivo
+   - estado
+   - fuente de verdad
+   - dependencias
+   - pendiente
+3. Genera un informe breve:
+   - archivos existentes
+   - archivos vacíos
+   - archivos con contenido
+   - discrepancias con el árbol objetivo
+4. No redactes diseño del juego ni lógica del motor.
+
+Salida:
+- lista de acciones realizadas
+- lista de discrepancias
+- lista de siguientes archivos prioritarios
+
+Prompt para Qwen 4B
+===================
+Actúa como dev junior.
+
+Objetivo:
+Transformar una fuente concreta en un archivo estructurado simple y correcto, sin rediseñar el sistema.
+
+Reglas:
+- Usa solo las fuentes adjuntas.
+- No inventes módulos ni mecánicas.
+- No resumas de forma creativa.
+- Si algo no está definido, marca TODO.
+- Prefiere claridad y literalidad a elegancia.
+
+Tarea:
+A partir de este documento fuente:
+[PEGAR doc o fragmento]
+
+y este formato objetivo:
+[PEGAR schema o plantilla]
+
+genera el archivo:
+[RUTA DESTINO]
+
+Criterios:
+- Mantén nombres estables.
+- Usa YAML simple.
+- No añadas explicación fuera del archivo.
+- Si propones enums, que salgan solo de la fuente.
+- Máximo 120 líneas.
+
+Salida:
+solo el contenido final del archivo.
+
+Prompt para Devstral 7B
+=======================
+Actúa como desarrollador de implementación lenta pero cuidadosa.
+
+Objetivo:
+Producir un artefacto intermedio estable para el motor o el SDK a partir de documentación ya cerrada.
+
+Fuentes:
+1. [DOC PRINCIPAL]
+2. [SPEC RELACIONADA]
+3. [EJEMPLO CANÓNICO]
+
+Reglas:
+- No rehagas la arquitectura general.
+- No mezcles SDK narrativo con runtime del motor.
+- Si detectas ambigüedad, conserva la solución más conservadora.
+- Mantén separación estricta entre lógica de motor y contenido/configuración.
+- Produce algo usable por otro modelo para Rust.
+
+Tarea:
+Genera:
+[RUTA DESTINO]
+
+Debe incluir:
+- definición completa
+- campos obligatorios y opcionales
+- notas cortas dentro del archivo si hacen falta
+- cero prosa extra fuera del entregable
+
+Validación:
+- compatible con el motor Nivel 1
+- compatible con NarrativeDefinition minimalista en SDK
+- legible por modelos pequeños
+
+Prompt para Codestral Web
+=========================
+Actúa como dev senior de Rust.
+
+Objetivo:
+Traducir una especificación ya estabilizada a código Rust claro, modular y revisable.
+
+Contexto:
+Este proyecto separa:
+- motor genérico Nivel 1
+- configuración Nivel 2
+- SDK narrativo fuera del runtime
+
+Importante:
+- El motor no interpreta narrativa.
+- NarrativeDefinition pertenece al SDK.
+- El runtime consume configuración y estado, no prompts narrativos.
+
+Entradas:
+1. Resumen operativo del módulo:
+[PEGAR]
+2. Schema fuente:
+[PEGAR]
+3. Ejemplo válido:
+[PEGAR]
+4. Convenciones del repo Rust:
+[PEGAR si existe]
+
+Tarea:
+Genera código Rust para:
+- structs
+- enums
+- traits si son necesarios
+- validaciones básicas
+- módulos y nombres de archivo sugeridos
+
+Restricciones:
+- no uses macros complejas innecesarias
+- evita sobreingeniería
+- separa domain model de parsing/serde si compensa
+- el resultado debe ser apto para revisión humana y continuación por modelos más pequeños
+
+Salida:
+1. árbol sugerido de archivos Rust
+2. contenido de cada archivo
+3. notas de integración mínimas

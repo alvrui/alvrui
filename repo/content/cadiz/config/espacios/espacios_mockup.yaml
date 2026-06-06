@@ -1,0 +1,17 @@
+---
+config_espacios:
+  - id: "aduana"
+    nombre: "Aduana de Cádiz"
+    tipo_interaccion_primaria: "negociacion_intima"
+    coste_temporal_base: 1
+    nivel_riesgo_base: 2
+  - id: "cafe_apolo"
+    nombre: "Café de Apolo"
+    tipo_interaccion_primaria: "rumor"
+    coste_temporal_base: 1
+    nivel_riesgo_base: 1
+  - id: "calle_nueva"
+    nombre: "Calle Nueva"
+    tipo_interaccion_primaria: "info_contextual"
+    coste_temporal_base: 0
+    nivel_riesgo_base: 2

@@ -1,0 +1,89 @@
+facciones:
+  - id: liberales_progresistas
+    nombre: Liberales Progresistas
+    fuerza_inicial: 3
+    prioridad_politica_id: constitucion_1812
+    capacidades_presion:
+      - prensa
+      - púlpito
+      - denuncia
+
+  - id: serviles
+    nombre: Serviles
+    fuerza_inicial: 4
+    prioridad_politica_id: mantener_antiguo_regimen
+    capacidades_presion:
+      - influencia_corte
+      - control_ejercito
+
+  - id: moderados
+    nombre: Moderados
+    fuerza_inicial: 3
+    prioridad_politica_id: reformas_graduales
+    capacidades_presion:
+      - negociacion
+      - alianzas
+
+  - id: clero_ilustrado
+    nombre: Clero Ilustrado
+    fuerza_inicial: 2
+    prioridad_politica_id: reforma_religiosa
+    capacidades_presion:
+      - púlpito
+      - educacion
+
+  - id: alto_clero
+    nombre: Alto Clero
+    fuerza_inicial: 3
+    prioridad_politica_id: mantener_privilegios
+    capacidades_presion:
+      - influencia_corte
+      - excomunion
+
+  - id: consulado
+    nombre: Consulado de Cádiz
+    fuerza_inicial: 2
+    prioridad_politica_id: comercio_libre
+    capacidades_presion:
+      - lobby_economico
+      - control_aduana
+
+  - id: red_militar
+    nombre: Red Militar
+    fuerza_inicial: 3
+    prioridad_politica_id: defensa_nacional
+    capacidades_presion:
+      - fuerza
+      - intimidacion
+
+  - id: americanos_reformistas
+    nombre: Americanos Reformistas
+    fuerza_inicial: 2
+    prioridad_politica_id: igualdad_derechos
+    capacidades_presion:
+      - representacion
+      - protestas
+
+  - id: americanos_independentistas
+    nombre: Americanos Independentistas
+    fuerza_inicial: 1
+    prioridad_politica_id: independencia
+    capacidades_presion:
+      - subversion
+      - apoyo_externo
+
+  - id: pueblo
+    nombre: Pueblo
+    fuerza_inicial: 5
+    prioridad_politica_id: supervivencia
+    capacidades_presion:
+      - motin
+      - opinion_publica
+
+  - id: prensa
+    nombre: Prensa
+    fuerza_inicial: 1
+    prioridad_politica_id: libertad_expresion
+    capacidades_presion:
+      - difusion
+      - denuncia

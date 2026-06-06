@@ -1,0 +1,27 @@
+{
+  "project": "cadi-alfa",
+  "module": "game_api_estado_jornada_fix_01",
+  "description": "Corrección estricta de game_api_estado_jornada para alinearlo con el contrato M7 GET estadojornada del documento de arquitectura. Implementa mapeo exacto de GameState a EstadoJornadaDto según reglas contractuales, eliminando campos obsoletos y garantizando estructura fija para medidores y eventos.",
+  "functions": [
+    {
+      "name": "get_estado_jornada",
+      "signature": "fn get_estado_jornada(game: &GameState) -> EstadoJornadaDto",
+      "description": "Construye el DTO exacto de estado de jornada exigido por M7, aplicando reglas de mapeo estrictas: 6 medidores fijos en orden predefinido, campos renombrados según contrato, y valores stub para datos no disponibles. Elimina todos los campos obsoletos (crisis, tramo_nombre, turno, etc.) y garantiza tipos exactos según especificación.",
+      "examples": [
+        "let game = GameState::new();\nlet dto = get_estado_jornada(&game);\nassert_eq!(dto.tiempo.jornada, game.world.time.jornada_absoluta);\nassert_eq!(dto.protagonista.medidores.len(), 6);",
+        "let game = GameState {\n    world: WorldState {\n        time: TimeState {\n            jornada_absoluta: 42,\n            acto_narrativo: Some(3),\n            tramo_id: \"tramo_1\".to_string(),\n            ..Default::default()\n        },\n        ..Default::default()\n    },\n    player: PlayerState {\n        posicion_formal_id: Some(\"pos_1\".to_string()),\n        visibilidad_publica: Some(\"alta\".to_string()),\n        ..Default::default()\n    },\n    ..Default::default()\n};\nlet dto = get_estado_jornada(&game);\nassert_eq!(dto.tiempo.acto, 3);\nassert_eq!(dto.tiempo.tramo_id, \"tramo_1\");\nassert_eq!(dto.protagonista.posicion_formal_id, \"pos_1\");"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test]\nfn test_get_estado_jornada_maps_time_and_player() {\n    use crate::game_state::GameState;\n    let game = GameState::new();\n    let dto = get_estado_jornada(&game);\n    assert_eq!(dto.tiempo.jornada, game.world.time.jornada_absoluta);\n    assert_eq!(dto.protagonista.medidores.len(), 6);\n}",
+    "#[test]\nfn test_get_estado_jornada_initial_events_list_is_empty() {\n    use crate::game_state::GameState;\n    let game = GameState::new();\n    let dto = get_estado_jornada(&game);\n    assert!(dto.eventos_disponibles.is_empty());\n    assert_eq!(dto.presupuesto_temporal, 0);\n}",
+    "#[test]\nfn test_get_estado_jornada_medidor_names_are_fixed() {\n    use crate::game_state::GameState;\n    let game = GameState::new();\n    let dto = get_estado_jornada(&game);\n    let nombres: Vec<_> = dto.protagonista.medidores.iter().map(|m| m.nombre.as_str()).collect();\n    assert_eq!(nombres, vec![\"influencia\", \"relacional\", \"reputacion\", \"coherencia\", \"recursos\", \"aguante\"]);\n}",
+    "#[test]\nfn test_get_estado_jornada_handles_missing_acto_narrativo() {\n    use crate::game_state::{GameState, TimeState};\n    let game = GameState {\n        world: WorldState {\n            time: TimeState {\n                acto_narrativo: None,\n                ..Default::default()\n            },\n            ..Default::default()\n        },\n        ..Default::default()\n    };\n    let dto = get_estado_jornada(&game);\n    assert_eq!(dto.tiempo.acto, 0);\n}",
+    "#[test]\nfn test_get_estado_jornada_uses_stub_values_for_missing_medidores() {\n    use crate::game_state::GameState;\n    let game = GameState::new();\n    let dto = get_estado_jornada(&game);\n    for medidor in dto.protagonista.medidores {\n        assert_eq!(medidor.valor, 50);\n        assert_eq!(medidor.tendencia, 0);\n        assert_eq!(medidor.umbral_bajo, 25);\n        assert_eq!(medidor.umbral_alto, 75);\n    }\n}"
+  ],
+  "dependencies": [
+    "serde"
+  ],
+  "notes": "Implementación estricta según contrato M7. Requisitos críticos:\n1. Estructura DTO inmutable con nombres exactos de campos (ej: 'tramo_id' no 'tramo_nombre').\n2. Medidores siempre 6, en orden fijo, con stubs si faltan datos.\n3. Eliminar todos los campos obsoletos mencionados en las prohibiciones.\n4. Mapeo directo de game.world.time → tiempo, game.player → protagonista.\n5. crisis_activa y eventos_disponibles deben ser None/empty_vec si no hay datos exactos.\n\nSobrescribir completamente rust/crates/game_core/src/game_api_estado_jornada.rs. No mantener compatibilidad con versiones anteriores del DTO. Validar con tests de exactitud contractual, no de aproximación."
+}

@@ -1,0 +1,22 @@
+{
+  "project": "cadi-alfa",
+  "module": "register_event_in_memory",
+  "description": "Registra un evento resuelto en la memoria del sistema, actualizando historial e indices de ultimo evento por familia, npc y espacio.",
+  "functions": [
+    {
+      "name": "register_event_in_memory",
+      "signature": "fn register_event_in_memory(memory: &mut MemoryState, id_plantilla: &str, familia: &str, npc_id: &str, espacio_id: &str, jornada: u32, opcion_elegida: &str)",
+      "description": "Crea una entrada EventHistoryEntry y la añade al historial, actualizando los mapas de ultimo evento por familia, npc y espacio.",
+      "examples": [
+        "register_event_in_memory(&mut memory, \"evt_saludo\", \"social\", \"npc_juana\", \"cafetin\", 3, \"opcion_cordial\");"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_register_event_adds_to_history() { let mut memory = MemoryState::new(); register_event_in_memory(&mut memory, \"evt_saludo\", \"social\", \"npc_juana\", \"cafetin\", 3, \"opcion_cordial\"); assert_eq!(memory.historial_eventos.len(), 1); let entry = &memory.historial_eventos[0]; assert_eq!(entry.id_plantilla, \"evt_saludo\"); assert_eq!(entry.familia, \"social\"); assert_eq!(entry.npc_id, \"npc_juana\"); assert_eq!(entry.espacio_id, \"cafetin\"); assert_eq!(entry.jornada, 3); assert_eq!(entry.opcion_elegida, \"opcion_cordial\"); }",
+    "#[test] fn test_register_event_updates_last_indices() { let mut memory = MemoryState::new(); register_event_in_memory(&mut memory, \"evt_saludo\", \"social\", \"npc_juana\", \"cafetin\", 5, \"opcion_cordial\"); assert_eq!(memory.ultimo_evento_por_familia.get(\"social\"), Some(&5)); assert_eq!(memory.ultimo_evento_por_npc.get(\"npc_juana\"), Some(&5)); assert_eq!(memory.ultimo_evento_por_espacio.get(\"cafetin\"), Some(&5)); }",
+    "#[test] fn test_register_event_keeps_history_bounded() { let mut memory = MemoryState::new(); for i in 0..60 { let id = format!(\"evt_{}\", i); register_event_in_memory(&mut memory, &id, \"test\", \"npc\", \"espacio\", i, \"op\"); } assert!(memory.historial_eventos.len() <= 50); let first = &memory.historial_eventos[0]; assert_eq!(first.id_plantilla, \"evt_10\"); }"
+  ],
+  "dependencies": [],
+  "notes": "Importar MemoryState y EventHistoryEntry desde crate::memory_state. La funcion debe crear un EventHistoryEntry con los parametros recibidos y hacer push en memory.historial_eventos. Si el tamaño supera 50 entradas, debe eliminar las mas antiguas hasta dejar solo las ultimas 50. Debe actualizar ultimo_evento_por_familia[familia], ultimo_evento_por_npc[npc_id] y ultimo_evento_por_espacio[espacio_id] con la jornada. No modificar intensidad_dramatica_acumulada ni ratio_eventos_negativos aun."
+}

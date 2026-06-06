@@ -1,0 +1,8 @@
+{
+  "task_id": "TASK-0001",
+  "agent_name": "mistral_adapter",
+  "model": "mistral-medium",
+  "status": "error",
+  "error": "[Errno 2] No such file or directory: 'mistral-vibe-cli'",
+  "timestamp": "2026-06-06T01:28:17.477761"
+}

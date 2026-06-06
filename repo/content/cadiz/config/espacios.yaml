@@ -1,0 +1,70 @@
+espacios:
+  - id: oratorio_san_felipe_neri
+    nombre: Oratorio de San Felipe Neri
+    disponible: true
+    nivel_riesgo: 2
+    clima: nervioso
+    npcs_presentes:
+      - arguelles
+      - gallardo
+      - calatrava
+    coste_temporal: 2
+    tipo_interaccion_primaria: debate_formal
+
+  - id: cafe_comedia
+    nombre: Café de la Comedia
+    disponible: true
+    nivel_riesgo: 1
+    clima: animado
+    npcs_presentes:
+      - muñoz_torrero
+      - quintana
+      - moratín
+    coste_temporal: 1
+    tipo_interaccion_primaria: debate_informal
+
+  - id: plaza_san_antonio
+    nombre: Plaza de San Antonio
+    disponible: true
+    nivel_riesgo: 3
+    clima: agitado
+    npcs_presentes:
+      - pueblo_1
+      - pueblo_2
+      - prensa_1
+    coste_temporal: 1
+    tipo_interaccion_primaria: accion_colectiva
+
+  - id: palacio_cortes
+    nombre: Palacio de las Cortes
+    disponible: true
+    nivel_riesgo: 4
+    clima: solemne
+    npcs_presentes:
+      - floridablanca
+      - jovellanos
+      - urquijo
+    coste_temporal: 3
+    tipo_interaccion_primaria: decision_politica
+
+  - id: catedral
+    nombre: Catedral de Cádiz
+    disponible: true
+    nivel_riesgo: 2
+    clima: sereno
+    npcs_presentes:
+      - alto_clero_1
+      - clero_ilustrado_1
+    coste_temporal: 2
+    tipo_interaccion_primaria: debate_religioso
+
+  - id: puerto
+    nombre: Puerto de Cádiz
+    disponible: true
+    nivel_riesgo: 3
+    clima: bullicioso
+    npcs_presentes:
+      - consulado_1
+      - comerciante_1
+    coste_temporal: 2
+    tipo_interaccion_primaria: negocio

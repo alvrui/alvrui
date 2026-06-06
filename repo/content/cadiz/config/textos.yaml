@@ -1,0 +1,18 @@
+textos:
+  event_titles:
+    debate_constitucion: "Debate sobre la Constitución"
+    crisis_alimenticia: "Crisis de abasto en Cádiz"
+    alianza_faccion: "Propuesta de alianza política"
+
+  event_descriptions:
+    debate_constitucion_texto: "Las Cortes debaten la redacción de la Constitución. Tu intervención puede inclinar la balanza."
+    crisis_alimenticia_texto: "El pueblo clama por pan. ¿Actúas o dejas que otros resuelvan el problema?"
+    alianza_faccion_texto: "Una facción rival te propone una alianza. Aceptar puede darte ventajas, pero rechazarla reforzará tu independencia."
+
+  option_texts:
+    apoyar_reforma_texto: "Apoyar la reforma constitucional"
+    oponerse_reforma_texto: "Oponerse a la reforma"
+    organizar_ayuda_texto: "Organizar ayuda para el pueblo"
+    ignorar_crisis_texto: "Ignorar la crisis"
+    aceptar_alianza_texto: "Aceptar la alianza"
+    rechazar_alianza_texto: "Rechazar la alianza"

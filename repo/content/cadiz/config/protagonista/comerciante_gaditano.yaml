@@ -1,0 +1,70 @@
+---
+protagonista:
+  id: "comerciante_gaditano_mockup"
+  nombre: "Alonso López de la Vega"
+  origen: "gaditano"
+  clase: "burguesia"
+  oficio: "comerciante"
+  adscripcion_politica: "consulado"
+  temperamento: "pragmatico"
+  posicion_formal_id: "ciudadano"
+  visibilidad: "publico"
+  medidores:
+    influencia:
+      valor: 50
+      tendencia: 0
+      umbral_bajo: 25
+      umbral_alto: 75
+      decaimiento_base: 3
+    relacional:
+      valor: 60
+      tendencia: 0
+      umbral_bajo: 25
+      umbral_alto: 75
+      decaimiento_base: 3
+    reputacion:
+      valor: 60
+      tendencia: 0
+      umbral_bajo: 25
+      umbral_alto: 75
+      decaimiento_base: 3
+    coherencia:
+      valor: 70
+      tendencia: 0
+      umbral_bajo: 25
+      umbral_alto: 75
+      decaimiento_base: 3
+    recursos:
+      valor: 70
+      tendencia: 0
+      umbral_bajo: 25
+      umbral_alto: 75
+      decaimiento_base: 3
+    aguante:
+      valor: 80
+      tendencia: 0
+      umbral_bajo: 25
+      umbral_alto: 75
+      decaimiento_base: 3
+  salud: 80
+  estres: 30
+  reputaciones:
+    fac_liberales_progresistas: 30
+    fac_consulado: 60
+    fac_serviles: 30
+  compromisos:
+    - id: "deuda_proveedor_indias"
+      tipo: "economico"
+      gravedad: "media"
+      plazo: 30
+      consecuencia_incumplimiento:
+        reputacion: -10
+        recursos: -5
+        etiqueta: "moroso"
+      recompensa_cumplimiento:
+        reputacion: +5
+        recursos: -10
+  accesos_iniciales:
+    - "aduana"
+    - "cafe_apolo"
+    - "calle_nueva"

@@ -1,0 +1,22 @@
+{
+  "project": "cadi-alfa",
+  "module": "close_jornada",
+  "description": "Cierra la jornada ejecutando las actualizaciones finales del sistema que ya están disponibles en esta fase del motor (actualmente solo decremento de cooldowns).",
+  "functions": [
+    {
+      "name": "close_jornada",
+      "signature": "fn close_jornada(memory: &mut MemoryState)",
+      "description": "Aplica las actualizaciones de fin de jornada actualmente implementadas (decremento de cooldowns en plantillas, NPCs y espacios). Internamente delega en `tick_cooldowns(memory)`.",
+      "examples": [
+        "close_jornada(&mut memory);"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_close_jornada_decrements_all_active_cooldowns() { let mut memory = MemoryState::new(); memory.cooldowns_plantilla.insert(\"evt_1\".to_string(), 2); memory.cooldowns_npc.insert(\"npc_1\".to_string(), 1); memory.cooldowns_espacio.insert(\"esp_1\".to_string(), 3); close_jornada(&mut memory); assert_eq!(memory.cooldowns_plantilla[\"evt_1\"], 1); assert_eq!(memory.cooldowns_npc[\"npc_1\"], 0); assert_eq!(memory.cooldowns_espacio[\"esp_1\"], 2); }",
+    "#[test] fn test_close_jornada_does_not_make_cooldowns_negative() { let mut memory = MemoryState::new(); memory.cooldowns_plantilla.insert(\"evt_1\".to_string(), 0); close_jornada(&mut memory); assert_eq!(memory.cooldowns_plantilla[\"evt_1\"], 0); }",
+    "#[test] fn test_close_jornada_leaves_empty_memory_untouched() { let mut memory = MemoryState::new(); close_jornada(&mut memory); assert!(memory.cooldowns_plantilla.is_empty() && memory.cooldowns_npc.is_empty() && memory.cooldowns_espacio.is_empty()); }"
+  ],
+  "dependencies": [],
+  "notes": "Requisitos: 1) Importar `MemoryState` desde `crate::memory_state` y `tick_cooldowns` desde `crate::cooldown_tick`. 2) La función debe llamar únicamente a `tick_cooldowns(memory)` sin modificar otros campos del estado (`historial_eventos`, `etiquetas_activas`, etc.). 3) Versión inicial para M5: sin lógica de decaimientos pasivos ni comprobación de umbrales."
+}

@@ -1,0 +1,32 @@
+---
+# Metadatos de la partida (Nivel 2: Configuración)
+partida:
+  id: "mockup_1805_trafalgar"
+  version_schema: "1.0"
+  fecha_creacion_iso: "2026-06-09T00:00:00Z"
+  escenario_id: "cadiz_1805_1816"
+  seed: "trafalgar_21_oct_1805"
+  duracion_estimada_jornadas: 10
+
+# Configuración del tiempo (M1)
+config_tiempo:
+  tramos:
+    - id: "1805a"
+      nombre: "Pre-asedio"
+      duracion_jornadas: 365
+    - id: "1808a"
+      nombre: "Asedio francés"
+      duracion_jornadas: 365
+  actos:
+    - id: "acto_0_prologo"
+      nombre: "Prólogo"
+      tramos_asociados: ["1805a"]
+    - id: "acto_1_asedio"
+      nombre: "Asedio y resistencia"
+      tramos_asociados: ["1808a"]
+
+# Estado inicial del tiempo (M1)
+tiempo_inicial:
+  tramo_id: "1805a"
+  acto: 0
+  jornada: 0

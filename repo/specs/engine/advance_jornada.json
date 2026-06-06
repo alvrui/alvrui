@@ -1,0 +1,21 @@
+{
+  "project": "cadi-alfa",
+  "module": "advance_jornada",
+  "description": "Avanza una jornada en el eje temporal de WorldState incrementando jornada_absoluta.",
+  "functions": [
+    {
+      "name": "advance_jornada",
+      "signature": "fn advance_jornada(world: &mut WorldState)",
+      "description": "Incrementa en 1 el contador de jornada_absoluta del WorldState.",
+      "examples": [
+        "advance_jornada(&mut world);"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_advance_jornada_increments_absolute_day() { let mut world = WorldState::new(); assert_eq!(world.time.jornada_absoluta, 0); advance_jornada(&mut world); assert_eq!(world.time.jornada_absoluta, 1); }",
+    "#[test] fn test_advance_jornada_is_additive() { let mut world = WorldState::new(); advance_jornada(&mut world); advance_jornada(&mut world); assert_eq!(world.time.jornada_absoluta, 2); }"
+  ],
+  "dependencies": [],
+  "notes": "Importar WorldState desde crate::world_state. La función advance_jornada solo debe modificar world.time.jornada_absoluta, sumándole 1. No debe modificar acto_narrativo, tiempo_tramo, distancia_pivote_proximo ni distancia_pivote_anterior en esta primera versión. Mantener la firma sencilla para poder integrarla fácilmente en el bucle de jornada más adelante."
+}

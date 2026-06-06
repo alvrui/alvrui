@@ -1,0 +1,51 @@
+{
+  "project": "cadi-alfa",
+  "module": "api_interfaz",
+  "description": "Módulo M7: API de Interfaz. Expone endpoints para interactuar con el motor (Nivel 1) desde el frontend (Nivel 3). No contiene lógica de juego, solo serialización/deserialización de datos. Basado en el contrato definido en docs/05-contratos-api-y-dtos.md.",
+  "functions": [
+    {
+      "name": "get_estado_jornada",
+      "signature": "pub fn get_estado_jornada(game: &GameState) -> EstadoJornadaDto",
+      "description": "Devuelve el estado completo de la jornada para el frontend: tiempo, protagonista, crisis activa, eventos disponibles y presupuesto temporal. Usa DTOs definidos en game_api/src/dtos.rs.",
+      "examples": [
+        "let dto = get_estado_jornada(&game);",
+        "assert_eq!(dto.tiempo.jornada, game.world.time.jornada_absoluta);"
+      ]
+    },
+    {
+      "name": "get_evento_detalle",
+      "signature": "pub fn get_evento_detalle(evento_id: &str, plantillas: &[EventTemplate]) -> Option<EventoDetalleDto>",
+      "description": "Devuelve los detalles de un evento específico (texto, opciones, consecuencias) para mostrarlo en pantalla. Busca la plantilla por ID y la convierte a DTO.",
+      "examples": [
+        "let detalle = get_evento_detalle(\"debate_constitucion\", &plantillas);"
+      ]
+    },
+    {
+      "name": "resolver_evento",
+      "signature": "pub fn resolver_evento(evento_id: &str, opcion_id: &str, game: &mut GameState) -> ResolverEventoOutput",
+      "description": "Aplica las consecuencias de una opción elegida por el jugador. Actualiza medidores, reputaciones, relaciones y memoria. Devuelve deltas aplicados y nuevas etiquetas.",
+      "examples": [
+        "let resultado = resolver_evento(\"debate_constitucion\", \"apoyar_liberales\", &mut game);"
+      ]
+    },
+    {
+      "name": "get_estado_personaje",
+      "signature": "pub fn get_estado_personaje(player: &PlayerState) -> EstadoPersonajeDto",
+      "description": "Devuelve el estado completo del personaje: perfil, medidores, reputaciones, relaciones y compromisos. Usa DTOs definidos en game_api/src/dtos.rs.",
+      "examples": [
+        "let dto = get_estado_personaje(&game.player);"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_get_estado_jornada_maps_time() { use crate::game_state::GameState; let game = GameState::new(); let dto = get_estado_jornada(&game); assert_eq!(dto.tiempo.jornada, game.world.time.jornada_absoluta); }",
+    "#[test] fn test_get_estado_jornada_maps_player() { use crate::game_state::GameState; let game = GameState::new(); let dto = get_estado_jornada(&game); assert_eq!(dto.protagonista.medidores.len(), 6); }",
+    "#[test] fn test_resolver_evento_updates_meters() { use crate::{game_state::GameState, generador_eventos::EventTemplate}; let mut game = GameState::new(); let plantillas = vec![EventTemplate { id: String::from(\"test_event\"), opciones: vec![], ..Default::default() }]; let resultado = resolver_evento(\"test_event\", \"op1\", &mut game); assert!(resultado.deltas_aplicados.len() > 0 || resultado.etiquetas_nuevas.len() > 0); }",
+    "#[test] fn test_get_estado_personaje_includes_all_medidores() { use crate::player_state::PlayerState; let player = PlayerState::new(); let dto = get_estado_personaje(&player); assert_eq!(dto.influencia, 0); assert_eq!(dto.relacional, 0); }"
+  ],
+  "dependencies": [
+    "serde",
+    "serde_json"
+  ],
+  "notes": "Ubicar en repo/rust/crates/game_api/src/api_interfaz.rs. Importar: use crate::game_state::GameState; use crate::generador_eventos::{EventTemplate, EventInstance}; use crate::dtos::{EstadoJornadaDto, EventoDetalleDto, ResolverEventoOutput, EstadoPersonajeDto}. Los DTOs ya están definidos en game_api/src/dtos.rs. No redefinir structs. Usar los tipos existentes. Asegurar que todos los campos de los DTOs estén poblados con valores stub si no hay datos reales."
+}

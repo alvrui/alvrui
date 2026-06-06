@@ -1,0 +1,152 @@
+repo/
+├─ README.md
+├─ ROADMAP.md
+├─ TASKS.md
+│
+├─ docs/
+│  ├─ 01-motor-arquitectura-nivel1.md
+│  ├─ 02-nivel1-derivation-y-mecanicas.md
+│  ├─ 03-sdk-narrativas-y-generacion.md
+│  ├─ 04-nivel2-configuracion-cadiz.md
+│  ├─ 05-contratos-api-y-dtos.md
+│  └─ decisions/
+│     ├─ 001-m4-siete-factores.md
+│     ├─ 002-event-instance.md
+│     ├─ 003-narrative-definition.md
+│     └─ 004-sdk-vs-motor-separacion.md
+│
+├─ specs/
+│  ├─ engine/
+│  │  ├─ game-state.schema.yaml
+│  │  ├─ world-state.schema.yaml
+│  │  ├─ player-state.schema.yaml
+│  │  ├─ memory-state.schema.yaml
+│  │  ├─ event-template.schema.yaml
+│  │  ├─ event-instance.schema.yaml
+│  │  ├─ trigger-payloads.schema.yaml
+│  │  ├─ mechanic-definition.schema.yaml
+│  │  ├─ derivation-registry.schema.yaml
+│  │  ├─ m4-weight-factors.schema.yaml
+│  │  └─ api-dtos.schema.yaml
+│  │
+│  ├─ sdk/
+│  │  ├─ narrative-definition.schema.yaml
+│  │  ├─ generate-chain-request.schema.yaml
+│  │  ├─ generate-chain-response.schema.yaml
+│  │  ├─ story-elements.schema.yaml
+│  │  └─ campaign-style.schema.yaml
+│  │
+│  ├─ content/
+│  │  ├─ cadiz-config.manifest.yaml
+│  │  ├─ facciones.schema.yaml
+│  │  ├─ espacios.schema.yaml
+│  │  ├─ npcs.schema.yaml
+│  │  ├─ grupos-reputacion.schema.yaml
+│  │  ├─ pivotes.schema.yaml
+│  │  ├─ textos.schema.yaml
+│  │  └─ cadencia-jornada.schema.yaml
+│  │
+│  └─ prompts/
+│     ├─ rust/
+│     │  ├─ generate-structs.md
+│     │  ├─ generate-enums.md
+│     │  ├─ generate-derivers.md
+│     │  ├─ generate-m4-selector.md
+│     │  └─ generate-api-dtos.md
+│     └─ sdk/
+│        ├─ generate-event-chain.md
+│        ├─ generate-event-texts.md
+│        └─ expand-narrative-into-templates.md
+│
+├─ blueprints/
+│  ├─ rust/
+│  │  ├─ module-map.yaml
+│  │  ├─ crate-layout.yaml
+│  │  ├─ naming-conventions.yaml
+│  │  └─ error-model.yaml
+│  │
+│  └─ examples/
+│     ├─ mechanic-definition.example.yaml
+│     ├─ event-template.example.yaml
+│     ├─ event-instance.example.yaml
+│     ├─ narrative-definition.example.yaml
+│     └─ generate-chain-request.example.yaml
+│
+├─ content/
+│  └─ cadiz/
+│     ├─ config/
+│     │  ├─ tiempo.yaml
+│     │  ├─ facciones.yaml
+│     │  ├─ espacios.yaml
+│     │  ├─ npcs.yaml
+│     │  ├─ grupos_reputacion.yaml
+│     │  ├─ medidores.yaml
+│     │  ├─ interdependencias.yaml
+│     │  ├─ pivotes.yaml
+│     │  ├─ plantillas_evento.yaml
+│     │  ├─ textos.yaml
+│     │  ├─ cadencia_jornada.yaml
+│     │  ├─ cooldowns_base.yaml
+│     │  ├─ tipos_vinculo.yaml
+│     │  ├─ naturalezas_compromiso.yaml
+│     │  ├─ etiquetas_definicion.yaml
+│     │  ├─ perfiles_jugador.yaml
+│     │  └─ posiciones_formales.yaml
+│     │
+│     └─ sdk/
+│        ├─ narratives/
+│        │  ├─ personal_arc/
+│        │  ├─ political_plot/
+│        │  ├─ historical_fixed/
+│        │  ├─ historical_participation/
+│        │  └─ state_derailment/
+│        ├─ campaign_styles.yaml
+│        └─ generation_presets.yaml
+│
+├─ engine/
+│  ├─ rust-target/
+│  │  ├─ prompts/
+│  │  │  ├─ 01-state.md
+│  │  │  ├─ 02-derivation.md
+│  │  │  ├─ 03-mechanics.md
+│  │  │  ├─ 04-m4.md
+│  │  │  ├─ 05-loop.md
+│  │  │  └─ 06-api.md
+│  │  ├─ inputs/
+│  │  │  ├─ state-min.yaml
+│  │  │  ├─ mechanics-min.yaml
+│  │  │  ├─ events-min.yaml
+│  │  │  └─ api-min.yaml
+│  │  └─ outputs/
+│  │     └─ rust/
+│  │        ├─ crates/
+│  │        └─ drafts/
+│  │
+│  └─ reference/
+│     ├─ pseudocode/
+│     │  ├─ m3_apply_deltas.md
+│     │  ├─ m4_filter_weight_instantiate.md
+│     │  ├─ m5_turn_loop.md
+│     │  └─ m6_memory_updates.md
+│     └─ tests/
+│        ├─ scenarios/
+│        └─ fixtures/
+│
+├─ rust/
+│  ├─ Cargo.toml
+│  ├─ crates/
+│  │  ├─ game_core/
+│  │  ├─ game_content/
+│  │  ├─ game_api/
+│  │  └─ game_cli/
+│  └─ tests/
+│
+└─ tools/
+   ├─ scripts/
+   │  ├─ validate_specs.py
+   │  ├─ build_prompt_bundle.py
+   │  ├─ export_llm_context.py
+   │  └─ check_content_integrity.py
+   └─ templates/
+      ├─ prompt-header.md
+      └─ rust-task-template.md

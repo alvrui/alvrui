@@ -1,0 +1,22 @@
+{
+  "project": "cadi-alfa",
+  "module": "finalize_resolved_event",
+  "description": "Orquesta las actualizaciones de memoria tras resolver un evento: registra el evento en el historial y aplica los cooldowns correspondientes en MemoryState.",
+  "functions": [
+    {
+      "name": "finalize_resolved_event",
+      "signature": "fn finalize_resolved_event(memory: &mut MemoryState, id_plantilla: &str, familia: &str, npc_id: &str, espacio_id: &str, jornada: u32, opcion_elegida: &str, cooldown_plantilla: u32, cooldown_npc: u32, cooldown_espacio: u32)",
+      "description": "Registra un evento resuelto en el historial y actualiza los cooldowns de plantilla, npc y espacio en MemoryState, delegando en las funciones de M6 ya existentes.",
+      "examples": [
+        "finalize_resolved_event(&mut memory, \"evt_saludo\", \"social\", \"npc_juana\", \"cafetin\", 3, \"opcion_cordial\", 3, 2, 1);"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_finalize_resolved_event_registers_and_sets_cooldowns() { let mut memory = MemoryState::new(); finalize_resolved_event(&mut memory, \"evt_saludo\", \"social\", \"npc_juana\", \"cafetin\", 3, \"opcion_cordial\", 3, 2, 1); assert_eq!(memory.historial_eventos.len(), 1); let entry = &memory.historial_eventos[0]; assert_eq!(entry.id_plantilla, \"evt_saludo\"); assert_eq!(entry.familia, \"social\"); assert_eq!(entry.npc_id, \"npc_juana\"); assert_eq!(entry.espacio_id, \"cafetin\"); assert_eq!(entry.jornada, 3); assert_eq!(entry.opcion_elegida, \"opcion_cordial\"); assert_eq!(memory.cooldowns_plantilla.get(\"evt_saludo\"), Some(&3)); assert_eq!(memory.cooldowns_npc.get(\"npc_juana\"), Some(&2)); assert_eq!(memory.cooldowns_espacio.get(\"cafetin\"), Some(&1)); }",
+    "#[test] fn test_finalize_resolved_event_updates_last_indices_via_register() { let mut memory = MemoryState::new(); finalize_resolved_event(&mut memory, \"evt_saludo\", \"social\", \"npc_juana\", \"cafetin\", 5, \"opcion_cordial\", 0, 0, 0); assert_eq!(memory.ultimo_evento_por_familia.get(\"social\"), Some(&5)); assert_eq!(memory.ultimo_evento_por_npc.get(\"npc_juana\"), Some(&5)); assert_eq!(memory.ultimo_evento_por_espacio.get(\"cafetin\"), Some(&5)); }",
+    "#[test] fn test_finalize_resolved_event_respects_history_bound() { let mut memory = MemoryState::new(); for i in 0..60 { let id = format!(\"evt_{}\", i); finalize_resolved_event(&mut memory, &id, \"test\", \"npc\", \"espacio\", i, \"op\", 0, 0, 0); } assert!(memory.historial_eventos.len() <= 50); let first = &memory.historial_eventos[0]; assert_eq!(first.id_plantilla, \"evt_10\"); }"
+  ],
+  "dependencies": [],
+  "notes": "Importar MemoryState y EventHistoryEntry desde crate::memory_state, asi como las funciones register_event_in_memory (crate::register_event_in_memory) y apply_event_cooldowns (crate::apply_event_cooldowns). La funcion finalize_resolved_event debe limitarse a orquestar: primero llamar a register_event_in_memory(...) con los datos del evento y despues llamar a apply_event_cooldowns(...) con los IDs y valores de cooldown recibidos. No debe modificar directamente los campos de MemoryState ni tocar intensidad_dramatica_acumulada ni ratio_eventos_negativos. En esta fase no aplica logica de M3 ni de M1; solo encapsula el comportamiento de M6 para que M4/M5 tengan un unico punto de entrada al actualizar memoria tras un evento resuelto."
+}

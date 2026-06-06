@@ -1,0 +1,20 @@
+{
+  "project": "cadi-alfa",
+  "module": "game_api_estado_jornada_literal_01",
+  "description": "Archivo literal y stub del contrato M7 para estado_jornada. No inferir, no rediseñar, no adaptar.",
+  "functions": [
+    {
+      "name": "get_estado_jornada",
+      "signature": "fn get_estado_jornada(game: &GameState) -> EstadoJornadaDto",
+      "description": "Devuelve un stub exacto del contrato M7.",
+      "examples": null
+    }
+  ],
+  "tests": [
+    "#[test]\nfn test_field_shapes() {\n    use crate::game_state::GameState;\n    let game = GameState::new();\n    let dto = get_estado_jornada(&game);\n    assert_eq!(dto.tiempo.jornada, game.world.time.jornada_absoluta as u32);\n    assert_eq!(dto.tiempo.acto, 0);\n    assert!(dto.tiempo.tramo_id.is_empty());\n    assert_eq!(dto.protagonista.posicion_formal_id, \"\");\n    assert_eq!(dto.protagonista.visibilidad, \"desconocido\");\n    assert_eq!(dto.protagonista.medidores.len(), 6);\n    assert!(dto.crisis_activa.is_none());\n    assert!(dto.eventos_disponibles.is_empty());\n    assert_eq!(dto.presupuesto_temporal, 0);\n}\n"
+  ],
+  "dependencies": [
+    "serde"
+  ],
+  "notes": "Crear exactamente el archivo rust/crates/game_core/src/game_api_estado_jornada_literal_01.rs con este contenido estructural exacto.\n\nUsar exactamente:\nuse crate::game_state::GameState;\nuse serde::{Serialize, Deserialize};\n\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct TiempoDto {\n    pub tramo_id: String,\n    pub acto: u32,\n    pub jornada: u32,\n}\n\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct MedidorResumenDto {\n    pub nombre: String,\n    pub valor: u8,\n    pub tendencia: i8,\n    pub umbral_bajo: u8,\n    pub umbral_alto: u8,\n}\n\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct ProtagonistaDto {\n    pub posicion_formal_id: String,\n    pub visibilidad: String,\n    pub medidores: Vec<MedidorResumenDto>,\n}\n\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct CrisisActivaDto {\n    pub tipo_id: String,\n    pub fase: String,\n}\n\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct EventoDisponibleDto {\n    pub evento_id: String,\n    pub familia: String,\n    pub resumen_id: String,\n    pub coste_temporal: u8,\n}\n\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct EstadoJornadaDto {\n    pub tiempo: TiempoDto,\n    pub protagonista: ProtagonistaDto,\n    pub crisis_activa: Option<CrisisActivaDto>,\n    pub eventos_disponibles: Vec<EventoDisponibleDto>,\n    pub presupuesto_temporal: u8,\n}\n\nImplementar get_estado_jornada con valores stub exactos:\n- tiempo.tramo_id = String::new()\n- tiempo.acto = 0\n- tiempo.jornada = game.world.time.jornada_absoluta as u32\n- protagonista.posicion_formal_id = String::new()\n- protagonista.visibilidad = String::from(\"desconocido\")\n- protagonista.medidores = vec![\n    { nombre: \"influencia\", valor: 50, tendencia: 0, umbral_bajo: 25, umbral_alto: 75 },\n    { nombre: \"relacional\", valor: 50, tendencia: 0, umbral_bajo: 25, umbral_alto: 75 },\n    { nombre: \"reputacion\", valor: 50, tendencia: 0, umbral_bajo: 25, umbral_alto: 75 },\n    { nombre: \"coherencia\", valor: 50, tendencia: 0, umbral_bajo: 25, umbral_alto: 75 },\n    { nombre: \"recursos\", valor: 50, tendencia: 0, umbral_bajo: 25, umbral_alto: 75 },\n    { nombre: \"aguante\", valor: 50, tendencia: 0, umbral_bajo: 25, umbral_alto: 75 }\n  ]\n- crisis_activa = None\n- eventos_disponibles = Vec::new()\n- presupuesto_temporal = 0\n\nProhibiciones absolutas:\n- No usar otros nombres de structs.\n- No usar otros nombres de campos.\n- No usar i32 o u32 salvo donde arriba se especifica.\n- No añadir escena, turno, intensidad, prioridad, tipo_id en medidores, id, nombre o tipo en eventos.\n- No omitir posicion_formal_id ni visibilidad.\n- No reemplazar nombre por tipo_id en medidores.\n\nEsto no es una aproximación: es una copia literal de forma con stubs."
+}

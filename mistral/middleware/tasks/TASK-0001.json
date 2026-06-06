@@ -1,0 +1,15 @@
+{
+  "task_id": "TASK-0001",
+  "adapter": "middleware/adapters/mistral_adapter.py",
+  "model": "mistral-medium",
+  "work_dir": ".",
+  "prompt_file": "middleware/prompts/TASK-0001.md",
+  "output_file": "middleware/outbox/TASK-0001.response.md",
+  "meta_file": "middleware/logs/TASK-0001.meta.json",
+  "status": "error",
+  "stream": false,
+  "no_history": false,
+  "started_at": "2026-06-06T01:28:17.286917",
+  "finished_at": "2026-06-06T01:28:17.505188",
+  "return_code": 1
+}

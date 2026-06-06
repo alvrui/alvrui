@@ -1,0 +1,22 @@
+{
+  "project": "cadi-alfa",
+  "module": "close_jornada",
+  "description": "Cierra la jornada ejecutando las actualizaciones finales del sistema que ya estan disponibles en esta fase del motor.",
+  "functions": [
+    {
+      "name": "close_jornada",
+      "signature": "fn close_jornada(memory: &mut MemoryState)",
+      "description": "Aplica las actualizaciones de fin de jornada actualmente implementadas, en esta fase el decremento de cooldowns.",
+      "examples": [
+        "close_jornada(&mut memory);"
+      ]
+    }
+  ],
+  "tests": [
+    "#[test] fn test_close_jornada_decrements_all_active_cooldowns() { let mut memory = MemoryState::new(); memory.cooldowns_plantilla.insert(\"evt_1\".to_string(), 2); memory.cooldowns_npc.insert(\"npc_1\".to_string(), 1); memory.cooldowns_espacio.insert(\"esp_1\".to_string(), 3); close_jornada(&mut memory); assert_eq!(memory.cooldowns_plantilla.get(\"evt_1\"), Some(&1)); assert_eq!(memory.cooldowns_npc.get(\"npc_1\"), Some(&0)); assert_eq!(memory.cooldowns_espacio.get(\"esp_1\"), Some(&2)); }",
+    "#[test] fn test_close_jornada_does_not_make_cooldowns_negative() { let mut memory = MemoryState::new(); memory.cooldowns_plantilla.insert(\"evt_1\".to_string(), 0); close_jornada(&mut memory); assert_eq!(memory.cooldowns_plantilla.get(\"evt_1\"), Some(&0)); }",
+    "#[test] fn test_close_jornada_leaves_empty_memory_untouched() { let mut memory = MemoryState::new(); close_jornada(&mut memory); assert!(memory.cooldowns_plantilla.is_empty()); assert!(memory.cooldowns_npc.is_empty()); assert!(memory.cooldowns_espacio.is_empty()); }"
+  ],
+  "dependencies": [],
+  "notes": "Importar MemoryState desde crate::memory_state y reutilizar la funcion tick_cooldowns desde crate::cooldown_tick. La funcion close_jornada debe representar una primera version del cierre de jornada de M5. En esta fase solo debe llamar a tick_cooldowns(memory). No debe modificar historial_eventos, etiquetas_activas, intensidad_dramatica_acumulada ni ratio_eventos_negativos. No debe incluir aun logica de decaimientos pasivos ni comprobacion de umbrales."
+}

@@ -1,0 +1,36 @@
+etiquetas:
+- id: apoyo_constitucion
+  nombre: Apoyo a la Constitución
+  tipo: positiva
+  descripcion: "El personaje ha demostrado apoyo activo a la Constitución de 1812."
+  duracion_jornadas: 10
+
+- id: oposicion_constitucion
+  nombre: Oposición a la Constitución
+  tipo: negativa
+  descripcion: "El personaje se ha opuesto a la Constitución de 1812."
+  duracion_jornadas: 10
+
+- id: solidario
+  nombre: Solidario
+  tipo: positiva
+  descripcion: "El personaje ha ayudado en crisis sociales."
+  duracion_jornadas: 5
+
+- id: insensible
+  nombre: Insensible
+  tipo: negativa
+  descripcion: "El personaje ha ignorado crisis sociales."
+  duracion_jornadas: 5
+
+- id: alianza_activa
+  nombre: Alianza Activa
+  tipo: neutral
+  descripcion: "El personaje tiene una alianza activa con otra facción."
+  duracion_jornadas: 8
+
+- id: independiente
+  nombre: Independiente
+  tipo: neutral
+  descripcion: "El personaje prefiere mantenerse independiente de alianzas."
+  duracion_jornadas: 8

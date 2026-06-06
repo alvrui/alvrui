@@ -1,0 +1,34 @@
+cooldowns:
+  eventos:
+    familia_A: 5
+    familia_B: 10
+    familia_C: 8
+
+  facciones:
+    liberales_progresistas: 3
+    serviles: 4
+    moderados: 3
+    clero_ilustrado: 2
+    alto_clero: 3
+    consulado: 2
+    red_militar: 3
+    americanos_reformistas: 2
+    americanos_independentistas: 1
+    pueblo: 1
+    prensa: 1
+
+  espacios:
+    oratorio_san_felipe_neri: 2
+    cafe_comedia: 1
+    plaza_san_antonio: 1
+    palacio_cortes: 3
+    catedral: 2
+    puerto: 2
+
+  npcs:
+    arguelles: 4
+    muñoz_torrero: 3
+    calatrava: 3
+    floridablanca: 5
+    gallardo: 3
+    pueblo_1: 2

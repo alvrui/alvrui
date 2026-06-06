@@ -1,0 +1,72 @@
+plantillas:
+- id: debate_constitucion
+  familia: A
+  texto_id: debate_constitucion_texto
+  cooldown_jornadas: 5
+  opciones:
+    - id: apoyar_reforma
+      texto_id: apoyar_reforma_texto
+      consecuencias:
+        - target: med_influencia
+          delta: 10
+        - target: med_coherencia
+          delta: 5
+        - target: etiqueta_apoyo_constitucion
+          delta: 0
+    - id: oponerse_reforma
+      texto_id: oponerse_reforma_texto
+      consecuencias:
+        - target: med_influencia
+          delta: -5
+        - target: med_reputacion
+          delta: -10
+        - target: etiqueta_oposicion_constitucion
+          delta: 0
+
+- id: crisis_alimenticia
+  familia: B
+  texto_id: crisis_alimenticia_texto
+  cooldown_jornadas: 10
+  opciones:
+    - id: organizar_ayuda
+      texto_id: organizar_ayuda_texto
+      consecuencias:
+        - target: med_recursos
+          delta: -15
+        - target: med_reputacion
+          delta: 20
+        - target: etiqueta_solidario
+          delta: 0
+    - id: ignorar_crisis
+      texto_id: ignorar_crisis_texto
+      consecuencias:
+        - target: med_reputacion
+          delta: -20
+        - target: med_aguante
+          delta: -5
+        - target: etiqueta_insensible
+          delta: 0
+
+- id: alianza_faccion
+  familia: C
+  texto_id: alianza_faccion_texto
+  cooldown_jornadas: 8
+  opciones:
+    - id: aceptar_alianza
+      texto_id: aceptar_alianza_texto
+      consecuencias:
+        - target: med_relacional
+          delta: 15
+        - target: med_influencia
+          delta: 10
+        - target: comp_alianza_activa
+          delta: 0
+    - id: rechazar_alianza
+      texto_id: rechazar_alianza_texto
+      consecuencias:
+        - target: med_relacional
+          delta: -10
+        - target: med_coherencia
+          delta: 5
+        - target: etiqueta_independiente
+          delta: 0
