@@ -41,7 +41,7 @@ const TramasSection: React.FC<TramasSectionProps> = ({
   onAddReciente,
   agentes
 }) => {
-  const [showCatalog, setShowCatalog] = useState(false);
+  const [showBuilder, setShowBuilder] = useState(false);
   const [selectedTramaId, setSelectedTramaId] = useState<string | null>(null);
   const [aiRecommendations, setAIRecommendations] = useState<any[]>([]);
   const [aiTituloSuggestions, setAITituloSuggestions] = useState<string[]>([]);
@@ -72,7 +72,7 @@ const TramasSection: React.FC<TramasSectionProps> = ({
     };
     setTramas([...tramas, nuevaTrama]);
     setSelectedTramaId(nuevaTrama.id);
-    setShowCatalog(true);
+    setShowBuilder(true);
   }, [proyectoActual, tramas, setTramas]);
 
   const handleDeleteTrama = useCallback((id: string) => {
@@ -80,19 +80,24 @@ const TramasSection: React.FC<TramasSectionProps> = ({
       setTramas(tramas.filter(t => t.id !== id));
       if (selectedTramaId === id) {
         setSelectedTramaId(null);
-        setShowCatalog(false);
+        setShowBuilder(false);
       }
     }
   }, [tramas, setTramas, selectedTramaId]);
 
   const handleSelectTrama = useCallback((id: string) => {
     setSelectedTramaId(id);
-    setShowCatalog(true);
+    setShowBuilder(true);
   }, []);
 
   const handleUpdateTrama = useCallback((trama: Trama) => {
     setTramas(tramas.map(t => t.id === trama.id ? trama : t));
   }, [tramas, setTramas]);
+
+  const handleCloseBuilder = useCallback(() => {
+    setShowBuilder(false);
+    setSelectedTramaId(null);
+  }, []);
 
   const handleGenerateRecommendations = useCallback(async (trama: Trama) => {
     setLoadingAI(true);
@@ -199,13 +204,21 @@ const TramasSection: React.FC<TramasSectionProps> = ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {tramasFiltradas.map(trama => (
-                <TramaCard key={trama.id} trama={trama} storyElements={storyElements} isSelected={selectedTramaId === trama.id} onSelect={handleSelectTrama} onDelete={handleDeleteTrama} onAnalyze={() => handleAnalyzeTrama(trama)} />
+                <TramaCard
+                  key={trama.id}
+                  trama={trama}
+                  storyElements={storyElements}
+                  isSelected={selectedTramaId === trama.id}
+                  onSelect={handleSelectTrama}
+                  onDelete={handleDeleteTrama}
+                  onAnalyze={() => handleAnalyzeTrama(trama)}
+                />
               ))}
             </div>
           )}
         </div>
 
-        {selectedTramaId && currentTrama && showCatalog && (
+        {selectedTramaId && currentTrama && showBuilder && (
           <TramaBuilder
             trama={currentTrama}
             storyElements={storyElements}
@@ -220,7 +233,7 @@ const TramasSection: React.FC<TramasSectionProps> = ({
             onRemoveFavorito={onRemoveFavorito}
             onAddReciente={onAddReciente}
             onUpdateTrama={handleUpdateTrama}
-            onClose={() => { setShowCatalog(false); setSelectedTramaId(null); }}
+            onClose={handleCloseBuilder}
             problemasValidacion={problemasValidacion}
             onGenerateRecommendations={() => handleGenerateRecommendations(currentTrama)}
             onGenerateTitulo={() => handleGenerateTitulo(currentTrama)}
@@ -244,7 +257,7 @@ const TramasSection: React.FC<TramasSectionProps> = ({
                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Razon: {rec.reason}</p>
                           <div className="flex flex-wrap gap-1 mt-2">
                             {rec.storyElement.role_in_story.map((rol: string) => (
-                              <span key={rol} className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded text-xs">{rol}</span>
+                              <span key={rol} className="text-xs px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded">{rol}</span>
                             ))}
                           </div>
                         </div>
