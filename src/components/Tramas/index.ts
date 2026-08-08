@@ -5,3 +5,8 @@ export { default as StoryElementCard } from './StoryElementCard';
 export { default as FilterPanel } from './FilterPanel';
 export { default as SelectedElementsList } from './SelectedElementsList';
 export { default as StoryElementCatalog } from './StoryElementCatalog';
+export { default as ExploreStep } from './ExploreStep';
+export { default as SelectedStep } from './SelectedStep';
+export { default as ArcStep } from './ArcStep';
+export { default as AssignStep } from './AssignStep';
+export { default as ValidateStep } from './ValidateStep';
