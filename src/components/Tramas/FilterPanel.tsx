@@ -54,6 +54,36 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       : 'block text-left text-xs px-2 py-1 rounded bg-white dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-500';
   };
 
+  // Filter groups in priority order
+  const filterGroups = [
+    {
+      title: 'Genero y Ambientacion',
+      filters: [
+        { key: 'primary_genres', label: 'Generos Principales', options: filterOptions.primary_genres },
+        { key: 'secondary_genres', label: 'Generos Secundarios', options: filterOptions.secondary_genres },
+        { key: 'default_settings', label: 'Entornos', options: filterOptions.settings },
+        { key: 'default_periods', label: 'Periodos', options: filterOptions.periods },
+      ]
+    },
+    {
+      title: 'Personajes y Roles',
+      filters: [
+        { key: 'category', label: 'Categoria', options: filterOptions.categories },
+        { key: 'subtype', label: 'Subtipo', options: filterOptions.subtypes },
+        { key: 'role_in_story', label: 'Rol en Historia', options: filterOptions.roles },
+        { key: 'narrative_scale', label: 'Escala Narrativa', options: filterOptions.narrative_scales },
+      ]
+    },
+    {
+      title: 'Estructura y Conflicto',
+      filters: [
+        { key: 'arc_phase_affinity', label: 'Fases del Arco', options: filterOptions.arc_phases },
+        { key: 'conflict_type', label: 'Tipo de Conflicto', options: filterOptions.conflict_types },
+        { key: 'stakes_level', label: 'Nivel de Apuesta', options: filterOptions.stakes_levels },
+      ]
+    }
+  ];
+
   return (
     <div className={'bg-gray-50 dark:bg-gray-700 rounded-lg p-4 ' + className}>
       <div className="flex items-center justify-between mb-3">
@@ -63,40 +93,33 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         )}
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {filterOptions.categories.length > 0 && (
-          <div>
-            <h5 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Categoria</h5>
-            <div className="space-y-1">
-              {filterOptions.categories.slice(0, 5).map(category => (
-                <button key={category} onClick={() => handleToggleFilter('category', category)} className={getFilterButtonClass('category', category)}>{category}</button>
-              ))}
-            </div>
+      {filterGroups.map((group, groupIndex) => (
+        <div key={groupIndex} className="mb-4">
+          <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 border-b border-gray-200 dark:border-gray-600 pb-1">
+            {group.title}
+          </h5>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {group.filters.map((filter, filterIndex) => (
+              filter.options.length > 0 && (
+                <div key={filterIndex}>
+                  <h6 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">{filter.label}</h6>
+                  <div className="space-y-1 max-h-[200px] overflow-y-auto">
+                    {filter.options.map(option => (
+                      <button 
+                        key={option} 
+                        onClick={() => handleToggleFilter(filter.key, option)}
+                        className={getFilterButtonClass(filter.key, option)}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )
+            ))}
           </div>
-        )}
-
-        {filterOptions.roles.length > 0 && (
-          <div>
-            <h5 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Rol</h5>
-            <div className="space-y-1">
-              {filterOptions.roles.slice(0, 5).map(role => (
-                <button key={role} onClick={() => handleToggleFilter('role_in_story', role)} className={getFilterButtonClass('role_in_story', role)}>{role}</button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {filterOptions.primary_genres.length > 0 && (
-          <div>
-            <h5 className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Genero</h5>
-            <div className="space-y-1">
-              {filterOptions.primary_genres.slice(0, 5).map(genre => (
-                <button key={genre} onClick={() => handleToggleFilter('primary_genres', genre)} className={getFilterButtonClass('primary_genres', genre)}>{genre}</button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
