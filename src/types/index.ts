@@ -83,6 +83,8 @@ export interface StoryElement {
   production_implications: string;
   tags_engine: string[];
   priority_for_generation: number;
+  english_name: string;
+  spanish_name: string;
 }
 
 // Plot Types
@@ -310,6 +312,8 @@ export const sampleStoryElements: StoryElement[] = [
     production_implications: 'Requiere actor con buen rango emocional',
     tags_engine: ['heroe', 'crecimiento', 'ordinario_a_extraordinario'],
     priority_for_generation: 10,
+    english_name: 'Accidental Hero',
+    spanish_name: 'Héroe accidental',
   },
   {
     id: 'mentor-sabio',
@@ -344,6 +348,8 @@ export const sampleStoryElements: StoryElement[] = [
     production_implications: 'Actor de edad avanzada preferible',
     tags_engine: ['mentor', 'sabiduria', 'guia'],
     priority_for_generation: 9,
+    english_name: 'Wise Mentor',
+    spanish_name: 'Mentor sabio',
   },
   {
     id: 'antagonista-despiadado',
@@ -378,6 +384,8 @@ export const sampleStoryElements: StoryElement[] = [
     production_implications: 'Presupuesto alto para efectos visuales',
     tags_engine: ['villano', 'malvado', 'oponente'],
     priority_for_generation: 8,
+    english_name: 'Ruthless Antagonist',
+    spanish_name: 'Antagonista despiadado',
   },
   {
     id: 'llamada-aventura',
@@ -412,6 +420,8 @@ export const sampleStoryElements: StoryElement[] = [
     production_implications: 'Puede requerir efectos especiales',
     tags_engine: ['inicio', 'llamada', 'catalizador'],
     priority_for_generation: 10,
+    english_name: 'Call to Adventure',
+    spanish_name: 'Llamada a la aventura',
   },
   {
     id: 'prueba-iniciatica',
@@ -446,5 +456,7 @@ export const sampleStoryElements: StoryElement[] = [
     production_implications: 'Puede requerir locaciones especiales',
     tags_engine: ['prueba', 'desafio', 'crecimiento'],
     priority_for_generation: 8,
+    english_name: 'Initiation Test',
+    spanish_name: 'Prueba iniciática',
   },
 ];
