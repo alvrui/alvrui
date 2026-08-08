@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { Trama, TramaStoryElement, StoryElement, Personaje, ProblemaValidacion } from '../../types';
 
