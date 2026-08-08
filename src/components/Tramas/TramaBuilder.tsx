@@ -1,5 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { useDrag, useDrop, DropTargetMonitor } from 'react-dnd';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {
   Trama,
@@ -10,11 +9,11 @@ import {
   AgenteIA,
   FiltroStoryElement,
 } from '../../types';
-import { filtrarStoryElements } from '../../utils/filtering';
-import { validarAsignacionPersonaje, validarCompatibilidadGenero } from '../../utils/validation';
-import StoryElementCard from './StoryElementCard';
-import FilterPanel from './FilterPanel';
-import SelectedElementsList from './SelectedElementsList';
+import ExploreStep from './ExploreStep';
+import SelectedStep from './SelectedStep';
+import ArcStep from './ArcStep';
+import AssignStep from './AssignStep';
+import ValidateStep from './ValidateStep';
 
 interface FilterOptions {
   categories: string[];
@@ -30,7 +29,7 @@ interface FilterOptions {
   settings: string[];
 }
 
-interface TramaBuilderProps {
+interface TramasBuilderProps {
   trama: Trama;
   storyElements: StoryElement[];
   filteredStoryElements: StoryElement[];
@@ -52,88 +51,7 @@ interface TramaBuilderProps {
   agente?: AgenteIA | null;
 }
 
-const DRAG_TYPE = 'STORY_ELEMENT';
-
-interface DragItem {
-  id: string;
-  index: number;
-}
-
-interface DraggableStoryElementProps {
-  storyElement: StoryElement;
-  index: number;
-  onSelect: (id: string) => void;
-  isSelected: boolean;
-  isFavorite: boolean;
-  isRecent: boolean;
-  onToggleFavorite: (id: string) => void;
-}
-
-const DraggableStoryElement: React.FC<DraggableStoryElementProps> = ({
-  storyElement,
-  index,
-  onSelect,
-  isSelected,
-  isFavorite,
-  isRecent,
-  onToggleFavorite
-}) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: DRAG_TYPE,
-    item: { id: storyElement.id, index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const opacity = isDragging ? 0.4 : 1;
-
-  return (
-    <div
-      ref={drag}
-      onClick={() => onSelect(storyElement.id)}
-      style={{ opacity }}
-      className={isSelected ? 'selected-element' : ''}
-    >
-      <StoryElementCard
-        storyElement={storyElement}
-        isFavorite={isFavorite}
-        isRecent={isRecent}
-        onToggleFavorite={() => onToggleFavorite(storyElement.id)}
-        showActions={true}
-      />
-    </div>
-  );
-};
-
-interface DropZoneProps {
-  children: React.ReactNode;
-  onDrop: (item: DragItem) => void;
-  canDrop: boolean;
-}
-
-const DropZone: React.FC<DropZoneProps> = ({ children, onDrop, canDrop }) => {
-  const [{ handlerId }, drop] = useDrop({
-    accept: DRAG_TYPE,
-    collect(monitor: DropTargetMonitor) {
-      return {
-        handlerId: monitor.getHandlerId(),
-      };
-    },
-    hover(item: DragItem, monitor: DropTargetMonitor) {
-      if (!canDrop) return;
-      onDrop(item);
-    },
-  });
-
-  return (
-    <div ref={drop} data-handler-id={handlerId} className="min-h-[100px]">
-      {children}
-    </div>
-  );
-};
-
-const TramaBuilder: React.FC<TramaBuilderProps> = ({
+const TramasBuilder: React.FC<TramasBuilderProps> = ({
   trama,
   storyElements,
   filteredStoryElements,
@@ -154,39 +72,19 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
   loadingAI,
   agente
 }) => {
-  const [selectedElementIds, setSelectedElementIds] = useState<Set<string>>(new Set());
+  const [activeStep, setActiveStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [editingTitulo, setEditingTitulo] = useState(false);
   const [newTitulo, setNewTitulo] = useState(trama.titulo);
 
-  // Selected elements in the trama
   const selectedInTrama = useMemo(() => {
     return new Set(trama.story_elements.map(e => e.story_element_id));
   }, [trama.story_elements]);
 
-  // Filter elements not already in the trama
-  const availableElements = useMemo(() => {
-    return filteredStoryElements.filter(se => !selectedInTrama.has(se.id));
-  }, [filteredStoryElements, selectedInTrama]);
-
-  // Search filtered elements
-  const searchFilteredElements = useMemo(() => {
-    if (!searchQuery) return availableElements;
-    const query = searchQuery.toLowerCase();
-    return availableElements.filter(se =>
-      se.name.toLowerCase().includes(query) ||
-      se.logline_usage.toLowerCase().includes(query) ||
-      se.tags_engine.some(tag => tag.toLowerCase().includes(query))
-    );
-  }, [availableElements, searchQuery]);
-
-  // Add element to trama
   const handleAddElement = useCallback((storyElementId: string) => {
     const storyElement = storyElements.find(se => se.id === storyElementId);
     if (!storyElement) return;
-
-    // Check if already in trama
     if (selectedInTrama.has(storyElementId)) return;
 
     const newStoryElement: TramaStoryElement = {
@@ -208,17 +106,16 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
     onAddReciente(storyElementId);
   }, [storyElements, selectedInTrama, trama, onUpdateTrama, onAddReciente]);
 
-  // Remove element from trama
   const handleRemoveElement = useCallback((elementId: string) => {
     const updatedTrama: Trama = {
       ...trama,
       story_elements: trama.story_elements.filter(e => e.id !== elementId),
+      personajes_asignados: trama.personajes_asignados.filter(pa => pa.story_element_id !== elementId),
       actualizado_en: new Date().toISOString(),
     };
     onUpdateTrama(updatedTrama);
   }, [trama, onUpdateTrama]);
 
-  // Update element in trama
   const handleUpdateElement = useCallback((elementId: string, updates: Partial<TramaStoryElement>) => {
     const updatedTrama: Trama = {
       ...trama,
@@ -230,7 +127,6 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
     onUpdateTrama(updatedTrama);
   }, [trama, onUpdateTrama]);
 
-  // Reorder elements
   const handleReorder = useCallback((draggedIndex: number, hoverIndex: number) => {
     const draggedElement = trama.story_elements[draggedIndex];
     const newElements = [...trama.story_elements];
@@ -245,15 +141,7 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
     onUpdateTrama(updatedTrama);
   }, [trama, onUpdateTrama]);
 
-  // Assign character to role
   const handleAssignPersonaje = useCallback((elementId: string, role: string, personajeId: string) => {
-    // Validate assignment
-    const problemas = validarAsignacionPersonaje(personajeId, role, trama, personajes);
-    if (problemas.length > 0 && problemas[0].tipo === 'error') {
-      alert('No se puede asignar: ' + problemas[0].mensaje);
-      return;
-    }
-
     const updatedTrama: Trama = {
       ...trama,
       story_elements: trama.story_elements.map(e => {
@@ -273,9 +161,8 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
       actualizado_en: new Date().toISOString(),
     };
     onUpdateTrama(updatedTrama);
-  }, [trama, personajes, onUpdateTrama]);
+  }, [trama, onUpdateTrama]);
 
-  // Save title
   const handleSaveTitulo = useCallback(() => {
     const updatedTrama: Trama = {
       ...trama,
@@ -286,32 +173,51 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
     setEditingTitulo(false);
   }, [trama, newTitulo, onUpdateTrama]);
 
-  // Toggle favorite
-  const handleToggleFavorite = useCallback((elementId: string) => {
-    if (favoritos.includes(elementId)) {
-      onRemoveFavorito(elementId);
-    } else {
-      onAddFavorito(elementId);
+  const getStepProgress = (step: number) => {
+    switch (step) {
+      case 1:
+        return filteredStoryElements.length > 0 ? 'complete' : 'incomplete';
+      case 2:
+        return trama.story_elements.length > 0 ? 'complete' : 'incomplete';
+      case 3:
+        const phasesCovered = new Set(trama.story_elements.flatMap(e => {
+          const se = storyElements.find(s => s.id === e.story_element_id);
+          return se ? se.arc_phase_affinity : [];
+        })).size;
+        return phasesCovered >= 3 ? 'complete' : 'warning';
+      case 4:
+        const unassigned = trama.story_elements.filter(e => {
+          const se = storyElements.find(s => s.id === e.story_element_id);
+          return se && se.role_in_story.length > 0 && !e.personaje_asignado_id;
+        }).length;
+        return unassigned === 0 ? 'complete' : 'warning';
+      case 5:
+        return problemasValidacion.length === 0 ? 'complete' : 'warning';
+      default:
+        return 'incomplete';
     }
-  }, [favoritos, onAddFavorito, onRemoveFavorito]);
+  };
 
-  // Get validation problems for a specific element
-  const getProblemasForElement = useCallback((elementId: string) => {
-    return problemasValidacion.filter(p => p.elemento_id === elementId);
-  }, [problemasValidacion]);
+  const stepNames = [
+    'Explorar',
+    'Seleccionados', 
+    'Arco Narrativo',
+    'Asignar Personajes',
+    'Validar'
+  ];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-6xl w-full my-8">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-6xl w-full my-8 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <button
                 onClick={onClose}
                 className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               >
-                ← Volver
+                Volver
               </button>
               
               {editingTitulo ? (
@@ -325,7 +231,7 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
                   />
                   <button
                     onClick={handleSaveTitulo}
-                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
+                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-sm"
                   >
                     Guardar
                   </button>
@@ -334,7 +240,7 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
                       setEditingTitulo(false);
                       setNewTitulo(trama.titulo);
                     }}
-                    className="px-3 py-1 text-gray-600 dark:text-gray-400 hover:text-gray-800"
+                    className="px-3 py-1 text-gray-600 dark:text-gray-400 hover:text-gray-800 text-sm"
                   >
                     Cancelar
                   </button>
@@ -373,7 +279,7 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
               </button>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 text-2xl"
               >
                 X
               </button>
@@ -387,77 +293,148 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
           )}
         </div>
 
-        <div className="p-6">
-          {/* Main Layout: Catalog on left, Builder on right */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left: Catalog */}
-            <div className="lg:col-span-1">
-              <div className="mb-4">
-                <div className="flex items-center space-x-2 mb-3">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Buscar Story Elements..."
-                    className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+        {/* Tabs Navigation */}
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <div className="flex space-x-1">
+              {stepNames.map((name, index) => {
+                const stepNum = index + 1 as 1 | 2 | 3 | 4 | 5;
+                const progress = getStepProgress(stepNum);
+                const isActive = activeStep === stepNum;
+                
+                return (
                   <button
-                    onClick={() => setShowFilters(!showFilters)}
-                    className="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                    key={stepNum}
+                    onClick={() => setActiveStep(stepNum)}
+                    className={'px-4 py-2 rounded-t-md text-sm font-medium transition-colors ' + 
+                      (isActive 
+                        ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 border-b-2 border-blue-500' 
+                        : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700')
+                    }
                   >
-                    Filtros
+                    <span className="mr-1">{stepNum}.</span>
+                    {name}
+                    {progress === 'complete' && !isActive && <span className="ml-1">OK</span>}
+                    {progress === 'warning' && !isActive && <span className="ml-1">!</span>}
+                    {progress === 'incomplete' && !isActive && <span className="ml-1">-</span>}
                   </button>
-                </div>
-
-                {showFilters && (
-                  <FilterPanel
-                    filterOptions={filterOptions}
-                    filtros={filtros}
-                    setFiltros={setFiltros}
-                    className="mb-4"
-                  />
-                )}
-              </div>
-
-              {/* Story Elements Catalog */}
-              <div className="space-y-2 max-h-[500px] overflow-y-auto">
-                {searchFilteredElements.length === 0 ? (
-                  <p className="text-gray-500 dark:text-gray-400 text-center py-4">
-                    No se encontraron Story Elements
-                  </p>
-                ) : (
-                  searchFilteredElements.map((storyElement, index) => (
-                    <DraggableStoryElement
-                      key={storyElement.id}
-                      storyElement={storyElement}
-                      index={index}
-                      onSelect={(id) => {
-                        handleAddElement(id);
-                        setSelectedElementIds(new Set([...selectedElementIds, id]));
-                      }}
-                      isSelected={selectedElementIds.has(storyElement.id)}
-                      isFavorite={favoritos.includes(storyElement.id)}
-                      isRecent={recientes.includes(storyElement.id)}
-                      onToggleFavorite={handleToggleFavorite}
-                    />
-                  ))
-                )}
-              </div>
+                );
+              })}
             </div>
+            
+            <div className="flex items-center space-x-2 text-xs">
+              <span className="text-gray-500 dark:text-gray-400">
+                {trama.story_elements.length} elementos
+              </span>
+              <span className={'px-2 py-0.5 rounded ' + 
+                (problemasValidacion.length === 0 
+                  ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200'
+                  : problemasValidacion.some(p => p.tipo === 'error')
+                  ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-200'
+                  : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-200')
+              }>
+                {problemasValidacion.length} problemas
+              </span>
+            </div>
+          </div>
+        </div>
 
-            {/* Right: Trama Builder */}
-            <div className="lg:col-span-2">
-              <SelectedElementsList
-                trama={trama}
-                storyElements={storyElements}
-                personajes={personajes}
-                onRemoveElement={handleRemoveElement}
-                onUpdateElement={handleUpdateElement}
-                onReorder={handleReorder}
-                onAssignPersonaje={handleAssignPersonaje}
-                getProblemasForElement={getProblemasForElement}
-                problemasValidacion={problemasValidacion}
-              />
+        {/* Step Content */}
+        <div className="p-6">
+          {activeStep === 1 && (
+            <ExploreStep
+              storyElements={storyElements}
+              filteredStoryElements={filteredStoryElements}
+              filterOptions={filterOptions}
+              filtros={filtros}
+              setFiltros={setFiltros}
+              favoritos={favoritos}
+              recientes={recientes}
+              onAddFavorito={onAddFavorito}
+              onRemoveFavorito={onRemoveFavorito}
+              onAddReciente={onAddReciente}
+              selectedIds={selectedInTrama}
+              onSelectElement={handleAddElement}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              showFilters={showFilters}
+              setShowFilters={setShowFilters}
+            />
+          )}
+
+          {activeStep === 2 && (
+            <SelectedStep
+              trama={trama}
+              storyElements={storyElements}
+              personajes={personajes}
+              onRemoveElement={handleRemoveElement}
+              onUpdateElement={handleUpdateElement}
+              onReorder={handleReorder}
+              problemasValidacion={problemasValidacion}
+            />
+          )}
+
+          {activeStep === 3 && (
+            <ArcStep
+              trama={trama}
+              storyElements={storyElements}
+              onRemoveElement={handleRemoveElement}
+              personajes={personajes}
+            />
+          )}
+
+          {activeStep === 4 && (
+            <AssignStep
+              trama={trama}
+              storyElements={storyElements}
+              personajes={personajes}
+              onAssignPersonaje={handleAssignPersonaje}
+            />
+          )}
+
+          {activeStep === 5 && (
+            <ValidateStep
+              trama={trama}
+              storyElements={storyElements}
+              personajes={personajes}
+              problemasValidacion={problemasValidacion}
+              onGenerateRecommendations={onGenerateRecommendations}
+              onGenerateTitulo={onGenerateTitulo}
+              loadingAI={loadingAI}
+            />
+          )}
+        </div>
+
+        {/* Step Navigation */}
+        <div className="p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 rounded-b-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex space-x-2">
+              {activeStep > 1 && (
+                <button
+                  onClick={() => setActiveStep((activeStep - 1) as 1 | 2 | 3 | 4 | 5)}
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors"
+                >
+                  Anterior
+                </button>
+              )}
+            </div>
+            
+            <div className="flex space-x-2">
+              {activeStep < 5 && (
+                <button
+                  onClick={() => setActiveStep((activeStep + 1) as 1 | 2 | 3 | 4 | 5)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Siguiente
+                </button>
+              )}
+              
+              <button
+                onClick={onClose}
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                Guardar y Cerrar
+              </button>
             </div>
           </div>
         </div>
@@ -466,4 +443,4 @@ const TramaBuilder: React.FC<TramaBuilderProps> = ({
   );
 };
 
-export default TramaBuilder;
+export default TramasBuilder;
